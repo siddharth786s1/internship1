@@ -1,103 +1,120 @@
 # Email Classification and PII Masking API
 
-This project implements an API to classify support emails into predefined categories while masking Personally Identifiable Information (PII) before processing.
+This project implements an API service for classifying support emails into predefined categories while masking Personally Identifiable Information (PII) before classification.
+
+## Objective
+
+To build an email classification system for a support team that:
+1.  Masks PII (Full Name, Email, Phone, DOB, Aadhar, Card Numbers, CVV, Expiry) using Regex and SpaCy NER (without LLMs).
+2.  Classifies emails into categories (e.g., Billing Issues, Technical Support) using a trained machine learning model.
+3.  Exposes this functionality via a FastAPI endpoint.
 
 ## Project Structure
 
 ```
-.
-├── api.py             # FastAPI application logic
-├── models.py          # Model loading, prediction (and optional training) logic
-├── utils.py           # PII masking and text utility functions
-├── requirements.txt   # Python dependencies
-├── saved_models/      # Directory for trained models (classifier, vectorizer)
-├── data/              # Directory for datasets (add your data here)
-├── .env               # (Optional) For environment variables
-├── .gitignore         # Git ignore file
-└── README.md          # This file
+/workspaces/internship1/
+├── saved_models/
+│   └── email_classifier_pipeline.pkl   # Saved classification model pipeline
+├── api.py                # FastAPI application logic and endpoints
+├── app.py                # Script to run the Uvicorn server
+├── models.py             # Model loading, prediction functions
+├── utils.py              # PII masking logic, text cleaning
+├── train.py              # Script to train the classification model
+├── requirements.txt      # Python package dependencies
+├── combined_emails_with_natural_pii.csv # Dataset used for training (ensure this is present)
+├── README.md             # This file
+└── .gitignore            # (Optional but recommended: add *.pyc, __pycache__, .venv, saved_models/*, *.csv)
 ```
 
 ## Setup
 
-1.  **Clone the repository:**
+1.  **Clone the repository (if applicable):**
     ```bash
     git clone <your-repo-url>
-    cd <your-repo-name>
+    cd internship1
     ```
-
-2.  **Create and activate a virtual environment:** (Recommended)
+2.  **Create and activate a virtual environment:**
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    python -m venv .venv
+    source .venv/bin/activate
+    # On Windows use: .venv\Scripts\activate
     ```
-
 3.  **Install dependencies:**
     ```bash
     pip install -r requirements.txt
     ```
-
-4.  **Download NLP models:**
+4.  **Download SpaCy Model (if not done automatically by `utils.py`):**
     ```bash
     python -m spacy download en_core_web_sm
-    # Run inside python interpreter if needed:
-    # import nltk; nltk.download('punkt'); nltk.download('stopwords')
     ```
+5.  **Train the Model (if `saved_models/email_classifier_pipeline.pkl` is not present):**
+    *   Ensure the dataset (`combined_emails_with_natural_pii.csv`) is in the root directory.
+    *   Run the training script:
+        ```bash
+        python train.py
+        ```
 
-5.  **(Crucial Step) Train the Model:**
-    *   You need to train the classification model first. Add your training data to the `data/` directory.
-    *   Adapt and run the training logic (e.g., the `train_and_save_model` function in `models.py`, potentially moving it to a separate `train.py` script). This will create the necessary files in `saved_models/`.
-    *   Example (modify as needed): `python models.py` (if you add training execution there) or `python train.py`
+## Running the API
 
-## Running the API Locally
+1.  **Start the FastAPI server:**
+    ```bash
+    python app.py
+    # OR directly using uvicorn:
+    # uvicorn api:app --host 0.0.0.0 --port 8000 --reload
+    ```
+    The API will be available at `http://127.0.0.1:8000` (or the port specified).
 
-Once the models are trained and saved:
+## Using the API
+
+Send a POST request to the `/classify/` endpoint with a JSON body containing the email text.
+
+**Example using `curl`:**
 
 ```bash
-uvicorn api:app --reload --host 0.0.0.0 --port 8000
+curl -X POST "http://127.0.0.1:8000/classify/" \
+     -H "Content-Type: application/json" \
+     -d '{
+           "email_body": "Hello, my name is Jane Doe and my card number is 4111-1111-1111-1111. My email is jane.doe@example.com. Please help with billing."
+         }'
 ```
 
-The API will be available at `http://localhost:8000` (or the port forwarded by your Codespace).
-
-## API Usage
-
-Send a POST request to the `/classify/` endpoint with a JSON body containing the email text:
-
-**Endpoint:** `POST /classify/`
-
-**Request Body:**
+**Expected Response Structure:**
 
 ```json
 {
-  "email_body": "Your email content here. My name is John Smith and my number is 555-123-4567."
-}
-```
-
-**Example Response:**
-
-```json
-{
-  "input_email_body": "Your email content here. My name is John Smith and my number is 555-123-4567.",
+  "input_email_body": "Hello, my name is Jane Doe and my card number is 4111-1111-1111-1111. My email is jane.doe@example.com. Please help with billing.",
   "list_of_masked_entities": [
     {
-      "position": [34, 44],
+      "position": [18, 26],
       "classification": "full_name",
-      "entity": "John Smith"
+      "entity": "Jane Doe"
     },
     {
-      "position": [61, 73],
-      "classification": "phone_number",
-      "entity": "555-123-4567"
+      "position": [49, 68],
+      "classification": "credit_debit_no",
+      "entity": "4111-1111-1111-1111"
+    },
+    {
+      "position": [83, 103],
+      "classification": "email",
+      "entity": "jane.doe@example.com"
     }
   ],
-  "masked_email": "Your email content here. My name is [full_name] and my number is [phone_number].",
-  "category_of_the_email": "Predicted Category" // e.g., "Account Management"
+  "masked_email": "Hello, my name is [full_name] and my card number is [credit_debit_no]. My email is [email]. Please help with billing.",
+  "category_of_the_email": "Billing Issues" // Example category
 }
 ```
+
+## Model Details
+
+*   **PII Masking:** SpaCy (`en_core_web_sm` for PERSON) and custom Regex patterns.
+*   **Classification Model:** TF-IDF Vectorizer + Multinomial Naive Bayes.
+*   **Training Accuracy:** Approx. 69% (as per last training run).
 
 ## Deployment
 
-(Add instructions for deploying to Hugging Face Spaces later)
+(Add link to your Hugging Face Space deployment here once completed)
 
-## Report
-
-(Link to or include your report here)
+```
+HF Space: [Link]
+```

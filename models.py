@@ -10,7 +10,6 @@ import re
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from utils import clean_text_for_classification, mask_pii
-from models import MODEL_PATH, load_model_pipeline, predict_category
 
 # --- Constants ---
 MODEL_DIR = Path("saved_models")
@@ -37,7 +36,7 @@ class ClassificationOutput(BaseModel):
 
 # --- Load Model at Startup ---
 # Load the model pipeline once when the application starts
-model_pipeline: Optional[Pipeline] = load_model_pipeline()
+model_pipeline: Optional[Pipeline] = None
 
 # --- Model Loading ---
 def load_model_pipeline() -> Optional[Pipeline]:
