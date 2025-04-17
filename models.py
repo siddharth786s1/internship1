@@ -1,22 +1,23 @@
 import joblib
-from pathlib import Path
-from typing import Any # For type hinting the model/vectorizer
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import Pipeline
+from typing import Tuple, Any
+from pathlib import Path # <-- Add this import
 from utils import clean_text_for_classification # Import cleaning function
 
-# --- Configuration ---
-MODEL_DIR = Path("saved_models")
-MODEL_PATH = MODEL_DIR / "email_classifier.joblib"
+# --- Constants ---
+MODEL_DIR = Path("saved_models") # <-- This line caused the error
+MODEL_PATH = MODEL_DIR / "email_classifier_pipeline.pkl" # Example using Path object
 VECTORIZER_PATH = MODEL_DIR / "tfidf_vectorizer.joblib"
 
 # Ensure the model directory exists
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
-# --- Placeholder for Model Loading ---
-# In a real scenario, you'd train and save these first.
-# For now, we'll define functions to load them, assuming they exist.
-
-def load_model_and_vectorizer() -> Tuple[Any, Any]:
-    """Loads the saved classification model and vectorizer."""
+# --- Model Loading ---
+def load_model_and_vectorizer() -> Tuple[Pipeline, Any]:
+    """Loads the trained model pipeline."""
     model = None
     vectorizer = None
 
@@ -76,10 +77,6 @@ def predict_category(text: str, model: Any, vectorizer: Any) -> str:
 
 def train_and_save_model(data, labels):
     """Example function to train and save a simple model."""
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.naive_bayes import MultinomialNB
-    from sklearn.pipeline import Pipeline
-
     print("Starting model training...")
 
     # Create a pipeline
