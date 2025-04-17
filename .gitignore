@@ -12,7 +12,7 @@ combined_emails_with_natural_pii.csv
 
 # Python cache
 __pycache__/
-*.py[cod]
+*.pyc
 *$py.class
 
 # Environment variables
