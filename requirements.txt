@@ -1,0 +1,19 @@
+# Core libraries
+pandas
+numpy
+scikit-learn
+python-dotenv
+
+# NLP libraries for PII masking (non-LLM)
+spacy>=3.0.0,<4.0.0
+nltk
+
+# API framework
+fastapi>=0.70.0,<1.0.0
+uvicorn[standard]>=0.15.0,<1.0.0
+pydantic>=1.8.0,<2.0.0 # For data validation in FastAPI
+
+# Add libraries for your chosen classification model later
+# e.g., transformers, torch, tensorflow
+# joblib or pickle for saving models if not using framework methods
+joblib
