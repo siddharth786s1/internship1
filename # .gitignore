@@ -1,17 +1,28 @@
 # .gitignore
+
+# Python virtual environment
 .venv/
+venv/
+ENV/
+env/
+
+# Large data/output files (if not essential for deployment)
+api_output_results.jsonl
+combined_emails_with_natural_pii.csv
+
+# Python cache
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.DS_Store
-*.log
-*.tmp
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env*
+
+# IDE / Editor specific
+.vscode/
+.idea/
 *.swp
 
-# Optional: If dataset is too large or shouldn't be committed
-# combined_emails_with_natural_pii.csv
-# api_output_results.jsonl
-
-# Optional: If model is very large and managed by Git LFS or stored elsewhere
-# saved_models/
+# OS specific
+.DS_Store
+Thumbs.db
