@@ -1,19 +1,19 @@
-# Core libraries
-pandas
-numpy
-scikit-learn
-python-dotenv
+# --- Core ---
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+pandas==2.2.2
+numpy==1.26.4
+scikit-learn==1.4.2
+joblib==1.4.2
 
-# NLP libraries for PII masking (non-LLM)
-spacy>=3.0.0,<4.0.0
-nltk
+# --- PII Masking ---
+spacy==3.7.4
+# The following model is downloaded by spacy CLI, but good to list
+# en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
 
-# API framework
-fastapi>=0.70.0,<1.0.0
-uvicorn[standard]>=0.15.0,<1.0.0
-pydantic>=1.8.0,<2.0.0 # For data validation in FastAPI
+# --- Other potential dependencies (add if you used them) ---
+# nltk==3.8.1 # If you used NLTK for preprocessing
+# python-dotenv==1.0.1 # If loading environment variables
 
-# Add libraries for your chosen classification model later
-# e.g., transformers, torch, tensorflow
-# joblib or pickle for saving models if not using framework methods
-joblib
+# --- Development/Testing (Optional) ---
+# requests==2.31.0 # For testing the API or running generate_output.py

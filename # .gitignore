@@ -1,0 +1,17 @@
+# .gitignore
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+*.log
+*.tmp
+*.swp
+
+# Optional: If dataset is too large or shouldn't be committed
+# combined_emails_with_natural_pii.csv
+# api_output_results.jsonl
+
+# Optional: If model is very large and managed by Git LFS or stored elsewhere
+# saved_models/
