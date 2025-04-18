@@ -137,9 +137,23 @@ cython_debug/
 # VSCode settings
 .vscode/
 
-# Output files
-api_output_results.jsonl
-combined_emails_with_natural_pii.csv
-
 # Saved models (if large or generated)
 saved_models/
+
+# Exclude Python virtual environments
+.venv/
+env/
+venv/
+
+# Exclude large data files
+
+# Exclude compiled Python files
+*.pyc
+__pycache__/
+
+# Exclude Jupyter Notebook checkpoint files
+.ipynb_checkpoints/
+
+# Exclude system files
+.DS_Store
+Thumbs.db
