@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Separately install the specific spaCy model needed using pip and link it
 RUN echo "Attempting to install and link spaCy model..." && \
     pip install --no-cache-dir https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl && \
-    python -m spacy link en_core_web_sm en_core_web_sm --force && \
+    python -m spacy link en_core_web_sm en_core_web_sm && \
     echo "SpaCy model installed and linked successfully."
 
 # Copy the rest of the application code into the container at /code
