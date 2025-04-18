@@ -1,15 +1,14 @@
-# Email Classification and PII Masking API
-
 ---
 title: Email PII Classifier V2
 emoji: 📧
 colorFrom: blue
 colorTo: green
-sdk: docker
+sdk: docker # Or streamlit, gradio, static, depending on your app
 pinned: false
-app_file: api.py 
-# Add other configurations if needed, e.g., python_version
+# Add other necessary configurations here
 ---
+
+# Email Classification and PII Masking API
 
 This project implements an API service for classifying support emails into predefined categories while masking Personally Identifiable Information (PII) before classification.
 
