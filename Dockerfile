@@ -32,6 +32,9 @@ COPY . .
 # Make port 7860 available (standard port for HF Spaces)
 EXPOSE 7860
 
+# Create the directory for saved models and set permissions
+RUN mkdir -p saved_models && chmod 777 saved_models
+
 # Command to run the application using Uvicorn, pointing to the 'app' instance in 'api.py'
 # Bind to 0.0.0.0 and listen on port 7860
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "7860"]
