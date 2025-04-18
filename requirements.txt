@@ -1,13 +1,13 @@
 # --- Core ---
-fastapi==0.111.0
-uvicorn[standard]==0.29.0
-pandas==2.2.2
+fastapi
+uvicorn[standard]
+pandas
 numpy==1.26.4
 scikit-learn==1.4.2
 joblib==1.4.2
 
 # --- PII Masking ---
-spacy==3.7.4
+spacy
 # The following model is downloaded by spacy CLI, but good to list
 # en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
 
