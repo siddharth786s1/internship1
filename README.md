@@ -116,5 +116,5 @@ curl -X POST "http://127.0.0.1:8000/classify/" \
 (Add link to your Hugging Face Space deployment here once completed)
 
 ```
-HF Space: [Link]
+HF Space: [[Link]](https://huggingface.co/spaces/siddharth786/email-pii-classifier-v2)
 ```
