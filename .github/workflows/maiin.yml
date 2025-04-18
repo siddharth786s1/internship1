@@ -1,35 +1,37 @@
-# Workflow name
-name: Sync to Hugging Face Hub
+- name: Push to Hub
+  env:
+    HF_TOKEN: $   - Avoid using `--force` for the push unless absolutely necessary, as it can bypass certain safeguards. Here's an updated command that avoids force-pushing:
+     ```yaml
+     git{{ secrets.HF_TOKEN }}
+  run: |
+    echo "Attempt push https://siddharth786:$HF_TOKEN@huggingface.co/spaces/siddharth786/email-pii-classifier-siddharth786s1 main
+     ```
 
-# Triggers: Run on push to main branch or manually
-on:
-  push:
-    branches: [main] # Or your default branch
+4. **Debugging:**
+   - Add a step to debug the issue by outputting theing to push to Hugging Face Hub..."
+    git push https:// result of the `git push` command:
+     ```yaml
+siddharth786:$HF_TOKEN     - name: Debug Push
+       run: |
+         git push@huggingface.co/spaces/siddharth786/email-pii-classifier-siddharth786s1 main || {
+      echo "Push failed. Please check if force push is allowed or if branch protection rules exist.";
+      https://siddharth786:$HF_TOKEN@huggingface.co exit 1;
+    }
+    echo "Push completed successfully."
+/spaces/siddharth786/email-pii-classifier-siddharth```
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+#### Step 3: Verify Your Repository Configuration
+786s1 main || echo "Push failed. Check repository settings."
+Log in to Hugging Face and:
+- Check the repository's branch settings to ensure the `main` branch accepts pushes     ```
 
-jobs:
-  sync-to-hub:
-    runs-on: ubuntu-latest
-    steps:
-      # Step 1: Check out the repository code
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # Fetch all history for all branches and tags
-          lfs: true      # Check out LFS files
+5. **Contact Hugging Face Support:**
+   - If the issue persists despite valid tokens and no.
+- If the branch has specific rules, modify the obvious restrictions, contact Hugging Face support to workflow to comply with them.
 
-      # Step 2: Push the code to Hugging Face Spaces
-      - name: Push to Hub
-        env:
-          # Use the HF_TOKEN secret stored in GitHub repository settings
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: |
-          echo "Attempting to push to Hugging Face Hub..."
-          # Push the main branch forcefully to the corresponding Hugging Face Space repo.
-          # The URL includes the username (siddharth786) and the HF token for authentication.
-          # Replace 'siddharth786' with your HF username if different.
-          # Replace 'email-pii-classifier-siddharth786s1' with your HF Space name if different.
-          # Added --force flag here:
-          git push --force https://siddharth786:$HF_TOKEN@huggingface.co/spaces/siddharth786/email-pii-classifier-siddharth786s1 main
-          echo "Push completed successfully."
+#### Step 4: Test Loc understand what constraints are being enforced byally
+Before running the workflow, test pushing changes the pre-receive hook.
+
+By addressing the permissions and from your local system using:
+```bash
+git push repository rules, you should be able to resolve the https://<username>:<HF_TOKEN>@huggingface.co/sp issue. Let me know if you need further assistance!aces/<username>/<space-name> main
