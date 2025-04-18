@@ -137,8 +137,8 @@ cython_debug/
 .vscode/
 
 # Output files
-api_output_results.jsonl
-combined_emails_with_natural_pii.csv
+# api_output_results.jsonl # Removed for LFS tracking
+# combined_emails_with_natural_pii.csv # Removed for LFS tracking
 
 # Saved models (if large or generated)
 saved_models/
