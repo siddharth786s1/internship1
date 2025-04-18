@@ -27,5 +27,5 @@ jobs:
           # Force-push the current branch (main) to the main branch of the Hugging Face Space repository.
           # Replace 'siddharth786s1' if your HF username or space owner is different.
           # Replace 'email-pii-classifier-siddharth786s1' if your space name is different.
-          git push --force https://siddharth786s1:$HF_TOKEN@huggingface.co/spaces/siddharth786s1/email-pii-classifier-siddharth786s1 main
+          run: git push --force https://siddharth786s1:$HF_TOKEN@huggingface.co/spaces/siddharth786s1/email-pii-classifier-siddharth786s1 main
           echo "Push command executed."
