@@ -1,20 +1,31 @@
 name: Sync to Hugging Face hub
 on:
   push:
-    branches: [main]
+    branches: [main] # Trigger on pushes to the main branch
 
-  # to run this workflow manually from the Actions tab
+  # Allows you to run this workflow manually from the Actions tab on GitHub
   workflow_dispatch:
 
 jobs:
   sync-to-hub:
     runs-on: ubuntu-latest
     steps:
+      # Checkout the repository, including LFS files
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-          lfs: true
-      - name: Push to hub
+          fetch-depth: 0 # Fetch all history for all branches and tags
+          lfs: true      # Checkout LFS files
+
+      - name: Push to Hugging Face Hub
         env:
+          # Use the HF_TOKEN secret stored in GitHub repository settings
+          # Ensure you have created a secret named HF_TOKEN in your GitHub repo settings
+          # with a Hugging Face WRITE token (https://huggingface.co/settings/tokens)
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push --force https://HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/siddharth786/email-pii-classifier-siddharth786s1 main
+        run: |
+          echo "Pushing to Hugging Face Space: siddharth786s1/email-pii-classifier-siddharth786s1"
+          # Force-push the current branch (main) to the main branch of the Hugging Face Space repository.
+          # Replace 'siddharth786s1' if your HF username or space owner is different.
+          # Replace 'email-pii-classifier-siddharth786s1' if your space name is different.
+          git push --force https://siddharth786s1:$HF_TOKEN@huggingface.co/spaces/siddharth786s1/email-pii-classifier-siddharth786s1 main
+          echo "Push command executed."
