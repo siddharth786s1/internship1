@@ -108,6 +108,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.venv/
 
 # Spyder project settings
 .spyderproject
@@ -137,8 +138,8 @@ cython_debug/
 .vscode/
 
 # Output files
-# api_output_results.jsonl # Removed for LFS tracking
-# combined_emails_with_natural_pii.csv # Removed for LFS tracking
+api_output_results.jsonl
+combined_emails_with_natural_pii.csv
 
 # Saved models (if large or generated)
 saved_models/
