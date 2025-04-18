@@ -16,8 +16,13 @@ COPY requirements.txt .
 
 # Install Python dependencies
 # Use --no-cache-dir to reduce image size
+# The --system flag can sometimes help avoid user scheme installs
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir --system -r requirements.txt
+
+# Download the specific spaCy model needed
+# Ensure 'spacy' is listed in requirements.txt
+RUN python -m spacy download en_core_web_sm
 
 # Copy the rest of the application code into the container at /code
 COPY . .
