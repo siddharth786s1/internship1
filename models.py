@@ -213,3 +213,5 @@ if __name__ == "__main__":
         print(f"Predicted Category: {category}")
     else:
         print("Cannot perform prediction as model pipeline failed to load.")
+#hi i am siddharth
+#hi i am siddharth      
