@@ -1,11 +1,12 @@
 # filepath: Dockerfile
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+# Use an official Python runtime as a parent image (non-slim)
+FROM python:3.9
 
 # Set the working directory in the container
 WORKDIR /code
 
 # Install system dependencies needed for building Python packages
+# (gcc/build-essential might already be in the non-slim image, but doesn't hurt)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     build-essential \
@@ -14,16 +15,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy the requirements file into the container at /code
 COPY requirements.txt .
 
-# Install Python dependencies
-# Use --no-cache-dir to reduce image size
-# The --system flag can sometimes help avoid user scheme installs
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir --system -r requirements.txt
-
-# Download the specific spaCy model needed using pip and link it
+# Install Python dependencies from requirements.txt first
 # Ensure 'spacy' is listed in requirements.txt
-RUN pip install --no-cache-dir https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl && \
-    python -m spacy link en_core_web_sm en_core_web_sm --force
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Separately install the specific spaCy model needed using pip and link it
+RUN echo "Attempting to install and link spaCy model..." && \
+    pip install --no-cache-dir https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl && \
+    python -m spacy link en_core_web_sm en_core_web_sm --force && \
+    echo "SpaCy model installed and linked successfully."
 
 # Copy the rest of the application code into the container at /code
 COPY . .
