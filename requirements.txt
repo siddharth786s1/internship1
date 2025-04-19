@@ -3,7 +3,7 @@ fastapi
 uvicorn[standard] # Includes performance extras
 pandas
 numpy==1.26.4
-scikit-learn==1.4.2
+scikit-learn==1.6.1 # Specify the version used for training
 joblib==1.4.2
 
 # --- PII Masking ---
@@ -19,4 +19,4 @@ spacy>=3.7,<3.9 # Example: Pin spacy version if needed
 # requests==2.31.0 # For testing the API or running generate_output.py
 
 # --- Additional Dependencies ---
-gradio # Add gradio
+gradio # Keep if you might switch back later, otherwise optional for Docker
