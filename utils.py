@@ -7,13 +7,13 @@ import os  # Import os to handle potential path issues
 
 # Assuming mask_pii and predict_category are defined in models.py
 try:
-    from models import mask_pii, predict_category, Pipeline  # Import Pipeline if needed for type hinting
-except ImportError:
-    print("ERROR in utils.py: Could not import functions/classes from models.py")
-    # Define dummy functions if import fails, so the rest of the file can load
+    from models import mask_pii, predict_category
+    print("Successfully imported functions from models.py")  # Add this for confirmation
+except ImportError as e:
+    print(f"ERROR in utils.py: Could not import functions/classes from models.py. Details: {e}")
+    # Define dummy functions if import fails
     def mask_pii(text, nlp_model): return "Masking failed", []
     def predict_category(text, pipeline): return "Classification failed"
-    Pipeline = object  # Dummy class
 
 # --- Model Loading ---
 MODEL_DIR = Path("saved_models")
