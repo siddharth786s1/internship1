@@ -1,11 +1,12 @@
 ---
-title: Email PII Classifier V2 API
+title: Email PII Classifier V2 (Gradio Interface)
 emoji: 📧
 colorFrom: blue
 colorTo: green
-sdk: docker # Or streamlit, gradio, static, depending on your app
+sdk: gradio
+sdk_version: 3.50.2 # Or a newer version if desired
+app_file: app.py
 pinned: false
-# Add other necessary configurations here
 ---
 
 # Email Classification and PII Masking API
@@ -128,3 +129,7 @@ curl -X POST "http://127.0.0.1:8000/classify/" \
 ```
 HF Space: [Link]
 ```# Trigger rebuild Sat Apr 19 14:51:35 UTC 2025
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+        both modified:   README.md
+        both modified:   some_other_file.py
