@@ -20,13 +20,13 @@ except Exception as e:
 # and returns the dictionary with keys like 'input_email_body', 'list_of_masked_entities', etc.
 # Adjust the import based on where this function is defined (e.g., utils.py, api.py)
 try:
-    from utils import process_email_request
+    from utils import process_email_request # MAKE SURE THIS IMPORT IS CORRECT
     print("Successfully imported process_email_request from utils.")
 except ImportError:
     print("Could not import process_email_request from utils. Trying from api...")
     try:
         # If the logic is maybe within api.py but callable
-        from api import process_email_request # Adjust if the function name is different
+        from api import process_email_request # MAKE SURE THIS IMPORT IS CORRECT
         print("Successfully imported process_email_request from api.")
     except ImportError:
         print("ERROR: Could not find the core processing function 'process_email_request'.")
@@ -42,7 +42,7 @@ iface = gr.Interface(
     outputs=gr.JSON(label="Processing Results"),
     title="Email Classification and PII Masking API",
     description="Enter the body of an email below. The API will process it to mask PII entities (like names, emails) and classify the email's category. The results will be shown in JSON format.",
-    allow_flagging="never" # Optional: Disables flagging/saving examples
+    flagging_mode="never" # Changed from allow_flagging
 )
 
 # Launch the interface
