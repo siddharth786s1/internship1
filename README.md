@@ -1,5 +1,5 @@
 ---
-title: Email PII Classifier V2
+title: Email PII Classifier V2 API
 emoji: 📧
 colorFrom: blue
 colorTo: green
@@ -127,4 +127,4 @@ curl -X POST "http://127.0.0.1:8000/classify/" \
 
 ```
 HF Space: [Link]
-```
+```# Trigger rebuild Sat Apr 19 14:51:35 UTC 2025
