@@ -137,8 +137,8 @@ cython_debug/
 # VSCode settings
 .vscode/
 
-# Saved models (if large or generated)
-saved_models/
+# Remove or comment out the line ignoring the saved models directory
+# saved_models/
 
 # Exclude Python virtual environments
 .venv/
