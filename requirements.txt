@@ -7,7 +7,7 @@ scikit-learn==1.4.2
 joblib==1.4.2
 
 # --- PII Masking ---
-spacy
+spacy>=3.7,<3.9 # Example: Pin spacy version if needed
 # The following model is downloaded by spacy CLI, but good to list
 # en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
 
@@ -17,3 +17,6 @@ spacy
 
 # --- Development/Testing (Optional) ---
 # requests==2.31.0 # For testing the API or running generate_output.py
+
+# --- Additional Dependencies ---
+gradio # Add gradio
