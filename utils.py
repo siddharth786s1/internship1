@@ -1,27 +1,31 @@
 import re
 import spacy
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional, Union
 import pickle
 from pathlib import Path
-import os  # Import os to handle potential path issues
+import os
 
-# Assuming mask_pii and predict_category are defined in models.py
+# --- Define/Import Pipeline Type FIRST ---
 try:
-    from models import mask_pii, predict_category
-    print("Successfully imported functions from models.py")  # Add this for confirmation
+    from sklearn.pipeline import Pipeline
+except ImportError:
+    Pipeline = object  # type: ignore
+
+# --- Import from models.py ---
+try:
+    from models import predict_category  # Keep this import
+    print("Successfully imported predict_category from models.py")
 except ImportError as e:
-    print(f"ERROR in utils.py: Could not import functions/classes from models.py. Details: {e}")
-    # Define dummy functions if import fails
-    def mask_pii(text, nlp_model): return "Masking failed", []
+    print(f"ERROR in utils.py: Could not import predict_category from models.py. Details: {e}")
     def predict_category(text, pipeline): return "Classification failed"
 
 # --- Model Loading ---
 MODEL_DIR = Path("saved_models")
 MODEL_PATH = MODEL_DIR / "email_classifier_pipeline.pkl"
-NLP_MODEL = None
-MODEL_PIPELINE = None
+NLP_MODEL: Optional[spacy.language.Language] = None
+MODEL_PIPELINE: Optional[Pipeline] = None  # Now Pipeline is defined
 
-def load_spacy_model():
+def load_spacy_model() -> Optional[spacy.language.Language]:
     """Loads the spaCy model."""
     global NLP_MODEL
     if NLP_MODEL is None:
@@ -41,7 +45,7 @@ def load_spacy_model():
                 NLP_MODEL = None  # Ensure it remains None if loading fails
     return NLP_MODEL
 
-def load_model_pipeline() -> Pipeline | None:
+def load_model_pipeline() -> Optional[Pipeline]:  # Now Pipeline is defined
     """Loads the classification pipeline from the .pkl file."""
     global MODEL_PIPELINE
     if MODEL_PIPELINE is None:
@@ -71,14 +75,14 @@ REGEX_PATTERNS = {
     "dob": r'\b(\d{1,2}[-/]\d{1,2}[-/]\d{2,4}|\d{4}[-/]\d{1,2}[-/]\d{1,2})\b'  # Basic DOB patterns
 }
 
-# --- PII Masking Function ---
-
-def mask_pii(text: str) -> Tuple[str, List[Dict]]:
+# --- PII Masking Function (Defined within utils.py) ---
+def mask_pii(text: str, nlp: spacy.language.Language) -> Tuple[str, List[Dict]]:
     """
     Detects and masks PII in the input text using spaCy NER and Regex.
 
     Args:
         text: The input email body string.
+        nlp: The spaCy language model.
 
     Returns:
         A tuple containing:
@@ -139,8 +143,7 @@ def mask_pii(text: str) -> Tuple[str, List[Dict]]:
 
     return masked_text, list_of_masked_entities
 
-# --- Main Processing Function for Gradio ---
-
+# --- Main Processing Function (Defined within utils.py) ---
 def process_email_request(email_body: str) -> dict:
     """
     Processes the input email body for PII masking and classification.
@@ -188,14 +191,3 @@ def process_email_request(email_body: str) -> dict:
             "error": f"An error occurred during processing: {str(e)}",
             "input_email_body": email_body
         }
-
-# --- Other Utility Functions (Add as needed) ---
-# E.g., text cleaning for classification model input
-def clean_text_for_classification(text: str) -> str:
-    """Basic text cleaning."""
-    text = text.lower()
-    text = re.sub(r'<.*?>', '', text)  # Remove HTML tags
-    text = re.sub(r'[^a-z\s]', '', text)  # Remove punctuation/numbers (adjust if needed)
-    text = re.sub(r'\s+', ' ', text).strip()  # Normalize whitespace
-    # Add stopword removal if necessary (import nltk stopwords)
-    return text

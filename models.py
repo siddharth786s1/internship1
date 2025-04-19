@@ -9,7 +9,6 @@ from pathlib import Path
 import re
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from utils import clean_text_for_classification
 import spacy
 import pickle
 
@@ -55,6 +54,15 @@ def load_model_pipeline() -> Optional[Pipeline]:
         print("Please train and save the model pipeline first.")
     return model_pipeline
 
+# --- Text Cleaning Function ---
+def clean_text_for_classification(text: str) -> str:
+    """Basic text cleaning."""
+    text = text.lower()
+    text = re.sub(r'<.*?>', '', text) # Remove HTML tags
+    text = re.sub(r'[^a-z\s]', '', text) # Remove non-alpha and non-whitespace
+    text = re.sub(r'\s+', ' ', text).strip() # Normalize whitespace
+    return text
+
 # --- Mask PII Function ---
 def mask_pii(text: str, nlp_model: spacy.language.Language) -> Tuple[str, List[Dict[str, Any]]]:
     """
@@ -90,22 +98,21 @@ def mask_pii(text: str, nlp_model: spacy.language.Language) -> Tuple[str, List[D
 def predict_category(text: str, pipeline: Pipeline) -> str:
     """
     Predicts the category of the text using the loaded classification pipeline.
-
-    Args:
-        text: The input text (potentially masked).
-        pipeline: The loaded scikit-learn compatible pipeline object.
-
-    Returns:
-        The predicted category name as a string.
+    Applies cleaning before prediction.
     """
-    print(f"Executing predict_category for text: '{text[:50]}...'") # Add log
+    print(f"Executing predict_category for text: '{text[:50]}...'")
     try:
-        prediction = pipeline.predict([text])
+        # Clean the text first using the function now in this file
+        cleaned_text = clean_text_for_classification(text)
+        print(f"Cleaned text for prediction: '{cleaned_text[:50]}...'")
+
+        # Assuming the pipeline has a .predict() method
+        prediction = pipeline.predict([cleaned_text]) # Predict on cleaned text
         category = str(prediction[0]) if prediction else "Prediction failed"
     except Exception as e:
         print(f"Error during prediction: {e}")
         category = "Prediction Error"
-    print(f"predict_category result: {category}") # Add log
+    print(f"predict_category result: {category}")
     return category
 
 # --- Training Function ---
