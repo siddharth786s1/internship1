@@ -9,7 +9,9 @@ from pathlib import Path
 import re
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from utils import clean_text_for_classification, mask_pii
+from utils import clean_text_for_classification
+import spacy
+import pickle
 
 # --- Constants ---
 MODEL_DIR = Path("saved_models")
@@ -53,34 +55,58 @@ def load_model_pipeline() -> Optional[Pipeline]:
         print("Please train and save the model pipeline first.")
     return model_pipeline
 
-# --- Prediction Function ---
-def predict_category(text: str, model_pipeline: Optional[Pipeline]) -> str:
+# --- Mask PII Function ---
+def mask_pii(text: str, nlp_model: spacy.language.Language) -> Tuple[str, List[Dict[str, Any]]]:
     """
-    Predicts the email category using the loaded model pipeline.
+    Finds and masks PII entities in text using the provided spaCy model.
 
     Args:
-        text: The masked email text.
-        model_pipeline: The loaded classification pipeline.
+        text: The input email body.
+        nlp_model: The loaded spaCy language model.
 
     Returns:
-        The predicted category name (str) or an error string.
+        A tuple containing:
+            - The email body with PII entities replaced by placeholders (e.g., "[full_name]").
+            - A list of dictionaries, where each dictionary describes a masked entity
+              (e.g., {"position": [start, end], "classification": "entity_type", "entity": "original_text"}).
     """
-    if not model_pipeline:
-        return "Error: Model Pipeline not loaded"
+    print(f"Executing mask_pii for text: '{text[:50]}...'") # Add log
+    masked_text = text
+    entities = []
+    doc = nlp_model(text)
+    for ent in doc.ents:
+        if ent.label_ in ["PERSON", "EMAIL"]:
+            entity_info = {
+                "position": [ent.start_char, ent.end_char],
+                "classification": ent.label_.lower(),
+                "entity": ent.text
+            }
+            entities.append(entity_info)
+            masked_text = masked_text.replace(ent.text, f"[{ent.label_.lower()}]")
+    print(f"mask_pii result - entities: {entities}") # Add log
+    return masked_text, entities
+
+# --- Prediction Function ---
+def predict_category(text: str, pipeline: Pipeline) -> str:
+    """
+    Predicts the category of the text using the loaded classification pipeline.
+
+    Args:
+        text: The input text (potentially masked).
+        pipeline: The loaded scikit-learn compatible pipeline object.
+
+    Returns:
+        The predicted category name as a string.
+    """
+    print(f"Executing predict_category for text: '{text[:50]}...'") # Add log
     try:
-        # 1. Clean the masked text (using the function from utils.py)
-        cleaned_text = clean_text_for_classification(text)
-
-        # 2. Predict using the pipeline (handles vectorization internally)
-        # model_pipeline.predict expects an iterable (like a list)
-        prediction = model_pipeline.predict([cleaned_text])
-
-        # 3. Return the first prediction
-        return prediction[0]
-
+        prediction = pipeline.predict([text])
+        category = str(prediction[0]) if prediction else "Prediction failed"
     except Exception as e:
         print(f"Error during prediction: {e}")
-        return "Error: Prediction failed"
+        category = "Prediction Error"
+    print(f"predict_category result: {category}") # Add log
+    return category
 
 # --- Training Function ---
 def train_model(data_path: Path, model_save_path: Path):
@@ -214,4 +240,4 @@ if __name__ == "__main__":
     else:
         print("Cannot perform prediction as model pipeline failed to load.")
 #hi i am siddharth
-#hi i am siddharth      
+#hi i am siddharth
