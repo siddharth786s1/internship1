@@ -1,30 +1,36 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
-from typing import List, Dict, Tuple, Any, Optional, Union
-import sys  # Add sys import
-import os  # Add os import
+print("Importing api.py...") # Add print statement
 
 # --- Define/Import Pipeline Type FIRST ---
 try:
     from sklearn.pipeline import Pipeline
+    print("api.py: Imported Pipeline from sklearn.")
 except ImportError:
     Pipeline = object  # type: ignore
+    print("api.py: Defined fallback Pipeline type.")
 
-# Add the project root to the Python path to allow imports
-# sys.path.append(os.path.dirname(os.path.abspath(__file__))) # This might not be needed depending on execution context
+# --- Other Imports ---
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+from typing import List, Dict, Tuple, Any, Optional, Union
+import sys
+import os
 
-# Import the processing function from utils
+# --- Import from utils (AFTER Pipeline is defined) ---
 try:
-    # Assuming utils.py is in the same directory or PYTHONPATH is set correctly
-    from utils import process_email_request, load_spacy_model, load_model_pipeline  # Import necessary functions
+    # utils.py should now import without circular dependency issues
+    from utils import process_email_request, load_spacy_model, load_model_pipeline
+    print("api.py: Successfully imported from utils.")
 except ImportError as e:
     print(f"ERROR in api.py: Could not import from utils. Details: {e}")
-    # Define dummy function if import fails to allow FastAPI to start
-    def process_email_request(email_body: str):
+    # Define dummy functions if import fails
+    def process_email_request(email_body: str): 
         return {"error": f"Failed to import processing function: {e}"}
-    # Define dummy loaders
-    def load_spacy_model(): print("Dummy spacy loader called"); return None
-    def load_model_pipeline(): print("Dummy pipeline loader called"); return None
+    def load_spacy_model(): 
+        print("Dummy spacy loader called")
+        return None
+    def load_model_pipeline(): 
+        print("Dummy pipeline loader called")
+        return None
 
 app = FastAPI(title="Email PII Classifier API", version="1.0.0")
 
@@ -43,7 +49,6 @@ class EmailResponse(BaseModel):
     category_of_the_email: str
 
 # --- Load models on startup ---
-# It's often better to load models once when the app starts
 @app.on_event("startup")
 async def startup_event():
     print("FastAPI startup: Loading models...")
@@ -83,6 +88,8 @@ async def classify_email(email_input: EmailInput):
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to the Email PII Classifier API. Use the /docs endpoint for details."}
+
+print("api.py finished importing.") # Add print statement
 
 # --- Optional: Add uvicorn runner for local testing ---
 if __name__ == "__main__":

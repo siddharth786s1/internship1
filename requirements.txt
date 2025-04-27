@@ -17,3 +17,6 @@ spacy>=3.7,<3.9 # Example: Pin spacy version if needed
 
 # --- Development/Testing (Optional) ---
 # requests==2.31.0 # For testing the API or running generate_output.py
+
+# --- Additional Dependencies ---
+gradio

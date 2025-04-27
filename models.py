@@ -1,8 +1,18 @@
+print("Importing models.py...") # Add print statement
+
+# --- Define/Import Pipeline Type FIRST ---
+try:
+    from sklearn.pipeline import Pipeline
+    print("models.py: Imported Pipeline from sklearn.")
+except ImportError:
+    Pipeline = object # type: ignore
+    print("models.py: Defined fallback Pipeline type.")
+
+# --- Other Imports ---
 import joblib
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from typing import Tuple, Any, Optional, List, Dict
 from pathlib import Path
@@ -11,6 +21,11 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import spacy
 import pickle
+
+# --- IMPORTANT: Ensure NO imports from utils.py here ---
+# Example of what NOT to have:
+# import utils  # <--- REMOVE THIS
+# from utils import some_function # <--- REMOVE THIS
 
 # --- Constants ---
 MODEL_DIR = Path("saved_models")
@@ -246,5 +261,5 @@ if __name__ == "__main__":
         print(f"Predicted Category: {category}")
     else:
         print("Cannot perform prediction as model pipeline failed to load.")
-#hi i am siddharth
-#hi i am siddharth
+
+print("models.py finished importing.") # Add print statement

@@ -1,3 +1,14 @@
+print("Importing utils.py...") # Add print statement for debugging
+
+# --- Define/Import Pipeline Type FIRST ---
+try:
+    from sklearn.pipeline import Pipeline
+    print("utils.py: Imported Pipeline from sklearn.")
+except ImportError:
+    Pipeline = object # type: ignore
+    print("utils.py: Defined fallback Pipeline type.")
+
+# --- Other Imports ---
 import re
 import spacy
 from typing import List, Dict, Tuple, Optional, Union
@@ -5,25 +16,21 @@ import pickle
 from pathlib import Path
 import os
 
-# --- Define/Import Pipeline Type FIRST ---
+# --- Import from models.py (AFTER Pipeline is defined) ---
 try:
-    from sklearn.pipeline import Pipeline
-except ImportError:
-    Pipeline = object  # type: ignore
-
-# --- Import from models.py ---
-try:
-    from models import predict_category  # Keep this import
-    print("Successfully imported predict_category from models.py")
+    # This should now work if models.py doesn't import utils
+    from models import predict_category
+    print("utils.py: Successfully imported predict_category from models.py")
 except ImportError as e:
     print(f"ERROR in utils.py: Could not import predict_category from models.py. Details: {e}")
+    # Define dummy function if import fails
     def predict_category(text, pipeline): return "Classification failed"
 
 # --- Model Loading ---
 MODEL_DIR = Path("saved_models")
 MODEL_PATH = MODEL_DIR / "email_classifier_pipeline.pkl"
 NLP_MODEL: Optional[spacy.language.Language] = None
-MODEL_PIPELINE: Optional[Pipeline] = None  # Now Pipeline is defined
+MODEL_PIPELINE: Optional[Pipeline] = None # Now Pipeline is defined
 
 def load_spacy_model() -> Optional[spacy.language.Language]:
     """Loads the spaCy model."""
@@ -191,3 +198,5 @@ def process_email_request(email_body: str) -> dict:
             "error": f"An error occurred during processing: {str(e)}",
             "input_email_body": email_body
         }
+
+print("utils.py finished importing.") # Add print statement

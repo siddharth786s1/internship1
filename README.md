@@ -1,13 +1,3 @@
----
-title: Email PII Classifier V2 (Gradio Interface)
-emoji: 📧
-colorFrom: blue
-colorTo: green
-sdk: gradio
-app_file: app.py
-pinned: false
----
-
 # Email Classification and PII Masking API
 
 This project implements an API service for classifying support emails into predefined categories while masking Personally Identifiable Information (PII) before classification.
