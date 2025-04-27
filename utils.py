@@ -15,6 +15,7 @@ from typing import List, Dict, Tuple, Optional, Union
 import pickle
 from pathlib import Path
 import os
+import joblib # Make sure joblib is imported
 
 # --- Import from models.py (AFTER Pipeline is defined) ---
 try:
@@ -60,11 +61,11 @@ def load_model_pipeline() -> Optional[Pipeline]:  # Now Pipeline is defined
             print(f"Model pipeline not found at {MODEL_PATH}. Please train and save the model pipeline first.")
             return None
         try:
-            with open(MODEL_PATH, "rb") as f:
-                MODEL_PIPELINE = pickle.load(f)
-            print("Model pipeline loaded successfully.")
+            # Use joblib.load instead of pickle.load
+            MODEL_PIPELINE = joblib.load(MODEL_PATH)
+            print("Model pipeline loaded successfully using joblib.")
         except Exception as e:
-            print(f"Error loading model pipeline from {MODEL_PATH}: {e}")
+            print(f"Error loading model pipeline from {MODEL_PATH} using joblib: {e}")
             MODEL_PIPELINE = None  # Ensure it remains None if loading fails
     return MODEL_PIPELINE
 
