@@ -161,3 +161,11 @@ Thumbs.db
 # NOTE: Large files like combined_emails_with_natural_pii.csv 
 # are handled by Git LFS and should NOT be listed here.
 # Add specific rules for other CSV/JSON files if they need ignoring.
+
+# Java specific
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
